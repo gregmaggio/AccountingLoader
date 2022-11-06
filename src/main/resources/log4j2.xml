@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+  <Appenders>
+	<RollingFile
+	    name="rollingFile"
+	    fileName="C:/Temp/Logs/AccountingLoader/application.txt"
+	    filePattern="C:/Temp/Logs/AccountingLoader/application.%d{yyyy-MM-dd}.txt"
+	    ignoreExceptions="false">
+	    <PatternLayout>
+	        <Pattern>%d{yyyy-MM-dd HH:mm:ss} [%t] %-5p %c - %m%n</Pattern>
+	    </PatternLayout>
+	    <Policies>
+	        <TimeBasedTriggeringPolicy interval="1"/>
+	    </Policies>
+	</RollingFile>
+  </Appenders>
+  <Loggers>
+    <Root level="all">
+      <AppenderRef ref="rollingFile"/>
+    </Root>
+  </Loggers>
+</Configuration>
