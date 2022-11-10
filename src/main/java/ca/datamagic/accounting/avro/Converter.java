@@ -142,7 +142,7 @@ public class Converter {
 		logger.debug("avroFileName: " + this.avroFileName);
 		
 		File csvFile = new File(this.csvFileName);
-		File avroFile = new File(this.avroFileName);
+		final File avroFile = new File(this.avroFileName);
 		
 		if (avroFile.exists()) {
 			Path csvPath = Paths.get(this.csvFileName);
@@ -160,6 +160,7 @@ public class Converter {
 		RecordBuilder<Schema> recordBuilder = SchemaBuilder.record("AccountingDTO");
 		recordBuilder.namespace("ca.datamagic.accounting.dto");
 		FieldAssembler<Schema> fieldAssembler = recordBuilder.fields();
+		fieldAssembler.requiredString("avroFile");
 		fieldAssembler.requiredString("utcTimeStamp");
 		fieldAssembler.requiredInt("utcYear");
 		fieldAssembler.requiredInt("utcMonth");
@@ -213,6 +214,7 @@ public class Converter {
 							logger.debug("timeStampUTC: " + timeStampUTC);
 							
 							GenericRecord record = new GenericData.Record(schema);
+							record.put("avroFile", avroFile.getName());
 							record.put("utcTimeStamp", timeStampUTC.getUTCTimeStamp());
 							record.put("utcYear", timeStampUTC.getUTCYear());
 							record.put("utcMonth", timeStampUTC.getUTCMonth());

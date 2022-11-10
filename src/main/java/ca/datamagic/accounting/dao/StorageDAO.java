@@ -88,6 +88,27 @@ public class StorageDAO extends BaseDAO {
 		return array;
 	}
 	
+	public String read(String date) throws IOException {
+		String bucketName = getBucketName();
+		String objectName1 = MessageFormat.format("accounting.avro.{0}", date);
+		BlobId blobId1 = BlobId.of(bucketName, objectName1);
+		Blob blob1 = this.getStorage().get(blobId1);
+		if (blob1 != null) {
+			if (blob1.exists()) {
+				return MessageFormat.format("gs://{0}/{1}", bucketName, objectName1);
+			}
+		}
+		String objectName2 = MessageFormat.format("accounting.avro.{0}_", date);
+		BlobId blobId2 = BlobId.of(bucketName, objectName2);
+		Blob blob2 = this.getStorage().get(blobId2);
+		if (blob2 != null) {
+			if (blob2.exists()) {
+				return MessageFormat.format("gs://{0}/{1}", bucketName, objectName2);
+			}
+		}
+		return null;
+	}
+	
 	public void delete(String objectName) throws IOException {
 		this.getStorage().delete(getBucketName(), objectName);
 	}

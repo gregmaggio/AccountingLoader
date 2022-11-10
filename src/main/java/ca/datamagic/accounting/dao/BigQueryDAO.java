@@ -50,14 +50,12 @@ public class BigQueryDAO extends BaseDAO {
 		return this.bigQuery;
 	}
 	
-	public long getEvents(int year, int month, int day) throws IOException, InterruptedException {
-		String query = MessageFormat.format("select count(eventName) as events from {0}.{1}.{2} where utcYear = {3} and utcMonth = {4} and utcDay = {5}", 
+	public long getEvents(String avroFile) throws IOException, InterruptedException {
+		String query = MessageFormat.format("select count(eventName) as events from {0}.{1}.{2} where avroFile = {3}", 
 				getProjectId(), 
 				getDatasetName(), 
 				getTableName(),
-				Integer.toString(year),
-				month,
-				day);
+				"'" + avroFile + "'");
 		logger.debug("query: " + query);
 		TableResult result = runQuery(query);
 		Iterator<FieldValueList> iterator = result.iterateAll().iterator();
@@ -68,14 +66,12 @@ public class BigQueryDAO extends BaseDAO {
 		return 0L;
 	}
 
-	public void deleteEvents(int year, int month, int day) throws IOException, InterruptedException {
-		String query = MessageFormat.format("delete from {0}.{1}.{2} where utcYear = {3} and utcMonth = {4} and utcDay = {5}", 
+	public void deleteEvents(String avroFile) throws IOException, InterruptedException {
+		String query = MessageFormat.format("delete from {0}.{1}.{2} where avroFile = {3}", 
 				getProjectId(), 
 				getDatasetName(), 
 				getTableName(),
-				Integer.toString(year),
-				month,
-				day);
+				"'" + avroFile + "'");
 		logger.debug("query: " + query);
 		runQuery(query);
 	}
