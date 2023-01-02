@@ -13,6 +13,7 @@ import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,8 +26,6 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.io.DatumWriter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import com.univocity.parsers.common.ParsingContext;
 import com.univocity.parsers.common.processor.ObjectRowProcessor;
@@ -39,7 +38,7 @@ import com.univocity.parsers.csv.CsvParserSettings;
  *
  */
 public class Converter {
-	private static final Logger logger = LogManager.getLogger(Converter.class);
+	private static final Logger logger = Logger.getLogger(Converter.class.getName());
 	private static final Pattern timeStampPattern = Pattern.compile("(?<year>\\d+)-(?<month>\\d+)-(?<day>\\d+)\\s(?<hour>\\d+):(?<minute>\\d+):(?<second>\\d+)\\s(?<timeZone>\\w+)", Pattern.CASE_INSENSITIVE);
 	private static final TimeZone easternTimeZone = TimeZone.getTimeZone("US/Eastern");
 	private static final TimeZone centralTimeZone = TimeZone.getTimeZone("US/Central");
@@ -138,8 +137,8 @@ public class Converter {
 	}
 
 	public void convert() throws IOException {
-		logger.debug("csvFileName: " + this.csvFileName);
-		logger.debug("avroFileName: " + this.avroFileName);
+		logger.info("csvFileName: " + this.csvFileName);
+		logger.info("avroFileName: " + this.avroFileName);
 		
 		File csvFile = new File(this.csvFileName);
 		final File avroFile = new File(this.avroFileName);
@@ -147,12 +146,12 @@ public class Converter {
 		if (avroFile.exists()) {
 			Path csvPath = Paths.get(this.csvFileName);
             BasicFileAttributes csvAttr = Files.readAttributes(csvPath, BasicFileAttributes.class);
-            logger.debug("csvLastModifiedTime: " + csvAttr.lastModifiedTime());
+            logger.info("csvLastModifiedTime: " + csvAttr.lastModifiedTime());
             Path avroPath = Paths.get(this.avroFileName);
             BasicFileAttributes avroAttr = Files.readAttributes(avroPath, BasicFileAttributes.class);
-            logger.debug("avroLastModifiedTime: " + avroAttr.lastModifiedTime());
+            logger.info("avroLastModifiedTime: " + avroAttr.lastModifiedTime());
             if (csvAttr.lastModifiedTime().toMillis() < avroAttr.lastModifiedTime().toMillis()) {
-            	logger.debug("Already written. Won't do it again.");
+            	logger.info("Already written. Won't do it again.");
             	return;
             }
 		}
@@ -211,7 +210,7 @@ public class Converter {
 							String timeZone = timeStampMatcher.group("timeZone");
 							
 							UTCTimeStamp timeStampUTC = localToGMT(year, month, day, hour, minute, second, timeZone);
-							logger.debug("timeStampUTC: " + timeStampUTC);
+							logger.info("timeStampUTC: " + timeStampUTC);
 							
 							GenericRecord record = new GenericData.Record(schema);
 							record.put("avroFile", avroFile.getName());
@@ -227,7 +226,7 @@ public class Converter {
 						}
 					}
 				} catch (Exception ex) {
-					logger.warn("Error converting record to AVRO at line #" + Long.toString(context.currentLine()));
+					logger.warning("Error converting record to AVRO at line #" + Long.toString(context.currentLine()));
 				}					
 			}
 		};

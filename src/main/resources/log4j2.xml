@@ -3,8 +3,8 @@
   <Appenders>
 	<RollingFile
 	    name="rollingFile"
-	    fileName="C:/Temp/Logs/AccountingLoader/application.txt"
-	    filePattern="C:/Temp/Logs/AccountingLoader/application.%d{yyyy-MM-dd}.txt"
+	    fileName="logs/accountingLoader.txt"
+	    filePattern="logs/accountingLoader.%d{yyyy-MM-dd}.txt"
 	    ignoreExceptions="false">
 	    <PatternLayout>
 	        <Pattern>%d{yyyy-MM-dd HH:mm:ss} [%t] %-5p %c - %m%n</Pattern>

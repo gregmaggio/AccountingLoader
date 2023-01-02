@@ -4,9 +4,7 @@
 package ca.datamagic.accounting.batch;
 
 import java.io.IOException;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Logger;
 
 import ca.datamagic.accounting.dao.FileDAO;
 
@@ -15,14 +13,25 @@ import ca.datamagic.accounting.dao.FileDAO;
  *
  */
 public class BatchDownloader {
-	private static final Logger logger = LogManager.getLogger(BatchDownloader.class);
+	private static final Logger logger = Logger.getLogger(BatchDownloader.class.getName());
+	
+	public static void download(String date) throws IOException {
+		logger.info("date: " + date);
+		FileDAO dao = new FileDAO();
+		try {
+			dao.connect();
+			dao.downloadLogFileForDate(date);
+		} finally {
+			dao.disconnect();
+		}
+	}
 	
 	/**
 	 * Download a file for a date or all log files
 	 * @param args
 	 */
-	public static void main(String[] args) {		
-		FileDAO dao = new FileDAO();
+	public static void main(String[] args) {
+		int result = 0;
 		try {
 			String date = null;
 			for (int ii = 0; ii < args.length;) {
@@ -34,29 +43,12 @@ public class BatchDownloader {
 					}
 				}
 			}
-			logger.debug("date: " + date);
-			
-			dao.connect();
-			
-			String[] logFiles = dao.getLogFiles();
-			for (int ii = 0; ii < logFiles.length; ii++) {
-				String logFile = logFiles[ii];
-				logger.debug("logFile: " + logFile);
-				if (date != null) {
-					if (logFile.contains(date)) {
-						dao.downloadLogFile(logFile);
-					}
-					continue;
-				}
-				dao.downloadLogFile(logFile);
-			}
+			download(date);
 		} catch (Throwable t) {
-			logger.error("Throwable", t);
-		}
-		try {
-			dao.disconnect();
-		} catch (IOException ex) {
-			logger.warn("IOException", ex);
+			logger.severe("Throwable: " + t.getMessage());
+			result = 1;
+		} finally {
+			System.exit(result);
 		}
 	}
 

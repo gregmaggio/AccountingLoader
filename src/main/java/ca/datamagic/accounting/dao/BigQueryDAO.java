@@ -7,9 +7,7 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.UUID;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Logger;
 
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
@@ -28,7 +26,7 @@ import com.google.cloud.bigquery.TableResult;
  *
  */
 public class BigQueryDAO extends BaseDAO {
-	private static final Logger logger = LogManager.getLogger(BigQueryDAO.class);
+	private static final Logger logger = Logger.getLogger(BigQueryDAO.class.getName());
 	private BigQuery bigQuery = null;
 	
 	public String getProjectId() throws IOException {
@@ -56,7 +54,7 @@ public class BigQueryDAO extends BaseDAO {
 				getDatasetName(), 
 				getTableName(),
 				"'" + avroFile + "'");
-		logger.debug("query: " + query);
+		logger.info("query: " + query);
 		TableResult result = runQuery(query);
 		Iterator<FieldValueList> iterator = result.iterateAll().iterator();
 		if (iterator.hasNext()) {
@@ -72,7 +70,7 @@ public class BigQueryDAO extends BaseDAO {
 				getDatasetName(), 
 				getTableName(),
 				"'" + avroFile + "'");
-		logger.debug("query: " + query);
+		logger.info("query: " + query);
 		runQuery(query);
 	}
 	

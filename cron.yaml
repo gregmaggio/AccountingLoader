@@ -1,0 +1,34 @@
+cron:
+
+- description: "Monday Import"
+  url: /api/cron/import
+  schedule: every monday 10:00
+  target: loader
+- description: "Tuesday Import"
+  url: /api/cron/import
+  schedule: every tuesday 10:00
+  target: loader
+- description: "Wednesday Import"
+  url: /api/cron/import
+  schedule: every wednesday 10:00
+  target: loader
+- description: "Thursday Import"
+  url: /api/cron/import
+  schedule: every thursday 10:00
+  target: loader
+- description: "Friday Import"
+  url: /api/cron/import
+  schedule: every friday 10:00
+  target: loader
+- description: "Saturday Import"
+  url: /api/cron/import
+  schedule: every saturday 10:00
+  target: loader
+- description: "Sunday Import"
+  url: /api/cron/import
+  schedule: every sunday 10:00
+  target: loader
+- description: "Weekly Cleanup"
+  url: /api/cron/clean
+  schedule: every monday 15:00
+  target: loader

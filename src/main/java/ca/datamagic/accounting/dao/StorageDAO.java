@@ -14,9 +14,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Logger;
 
 import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.Blob;
@@ -31,7 +29,7 @@ import com.google.cloud.storage.Storage.BlobListOption;
  *
  */
 public class StorageDAO extends BaseDAO {
-	private static final Logger logger = LogManager.getLogger(StorageDAO.class);
+	private static final Logger logger = Logger.getLogger(StorageDAO.class.getName());
 	private Storage storage = null;
 	
 	public String getBucketName() throws IOException {
@@ -58,9 +56,9 @@ public class StorageDAO extends BaseDAO {
 				if (blob.exists()) {
 					Path path = Paths.get(fileName);
 		            BasicFileAttributes attr = Files.readAttributes(path, BasicFileAttributes.class);
-		            logger.debug("lastModifiedTime: " + attr.lastModifiedTime());	            
-					if (blob.getCreateTime() > attr.lastModifiedTime().toMillis()) {
-						logger.debug("Blob already written. Not doing it again.");
+		            logger.info("lastModifiedTime: " + attr.lastModifiedTime());
+					if (blob.getCreateTimeOffsetDateTime().toEpochSecond() > attr.lastModifiedTime().toMillis()) {
+						logger.info("Blob already written. Not doing it again.");
 						return MessageFormat.format("gs://{0}/{1}", bucketName, objectName);
 					}
 				}

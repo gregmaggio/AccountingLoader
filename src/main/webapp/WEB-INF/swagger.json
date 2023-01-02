@@ -1,0 +1,209 @@
+{
+	"swagger" : "2.0",
+	"info" : {
+		"description" : "API",
+		"version" : "1.0",
+		"title" : "Loader",
+		"license" : {
+			"name" : "Apache License Version 2.0"
+		}
+	},
+	"host" : "{{host}}",
+	"basePath" : "",
+	"tags" : [
+		{
+			"name" : "service-controller",
+			"description" : "Service Controller"
+		},
+		{
+			"name" : "cron-controller",
+			"description" : "Cron Controller"
+		}
+	],
+	"paths" : {
+		"/api/importers" : {
+			"get" : {
+				"tags" : ["service-controller"],
+				"summary" : "Importers",
+				"operationId" : "Importers",
+				"consumes" : ["application/json"],
+				"produces" : ["application/json"],
+				"parameters" : [],
+				"responses" : {
+					"200" : {
+						"description" : "OK",
+						"schema" : {
+							"type" : "array",
+							"items" : {
+								"$ref" : "#/definitions/DailyTaskDTO"
+							}
+						}
+					},
+					"204" : {
+						"description" : "No Content"
+					},
+					"401" : {
+						"description" : "Unauthorized"
+					},
+					"403" : {
+						"description" : "Forbidden"
+					},
+					"404" : {
+						"description" : "Not Found"
+					}
+				}
+			}
+		},
+		"/api/csvFiles" : {
+			"get" : {
+				"tags" : ["service-controller"],
+				"summary" : "CSV Files",
+				"operationId" : "csvFiles",
+				"consumes" : ["application/json"],
+				"produces" : ["application/json"],
+				"parameters" : [],
+				"responses" : {
+					"200" : {
+						"description" : "OK",
+						"schema" : {
+							"type" : "array",
+							"items" : {
+								"type" : "string"
+							}
+						}
+					},
+					"204" : {
+						"description" : "No Content"
+					},
+					"401" : {
+						"description" : "Unauthorized"
+					},
+					"403" : {
+						"description" : "Forbidden"
+					},
+					"404" : {
+						"description" : "Not Found"
+					}
+				}
+			}
+		},
+		"/api/avroFiles" : {
+			"get" : {
+				"tags" : ["service-controller"],
+				"summary" : "AVRO Files",
+				"operationId" : "avroFiles",
+				"consumes" : ["application/json"],
+				"produces" : ["application/json"],
+				"parameters" : [],
+				"responses" : {
+					"200" : {
+						"description" : "OK",
+						"schema" : {
+							"type" : "array",
+							"items" : {
+								"type" : "string"
+							}
+						}
+					},
+					"204" : {
+						"description" : "No Content"
+					},
+					"401" : {
+						"description" : "Unauthorized"
+					},
+					"403" : {
+						"description" : "Forbidden"
+					},
+					"404" : {
+						"description" : "Not Found"
+					}
+				}
+			}
+		},
+		"/api/cron/import/{date}" : {
+			"get" : {
+				"tags" : ["cron-controller"],
+				"summary" : "Import",
+				"operationId" : "Import",
+				"consumes" : ["application/json"],
+				"produces" : ["*/*"],
+				"parameters" : [{
+						"in": "path",
+						"name": "date",
+						"description": "date",
+						"required": false,
+						"type" : "string"
+					}
+				],
+				"responses" : {
+					"200" : {
+						"description" : "OK"
+					},
+					"204" : {
+						"description" : "No Content"
+					},
+					"401" : {
+						"description" : "Unauthorized"
+					},
+					"403" : {
+						"description" : "Forbidden"
+					},
+					"404" : {
+						"description" : "Not Found"
+					}
+				}
+			}
+		},
+		"/api/cron/clean/{date}" : {
+			"get" : {
+				"tags" : ["cron-controller"],
+				"summary" : "Clean",
+				"operationId" : "Clean",
+				"consumes" : ["application/json"],
+				"produces" : ["*/*"],
+				"parameters" : [{
+						"in": "path",
+						"name": "date",
+						"description": "date",
+						"required": false,
+						"type" : "string"
+					}
+				],
+				"responses" : {
+					"200" : {
+						"description" : "OK"
+					},
+					"204" : {
+						"description" : "No Content"
+					},
+					"401" : {
+						"description" : "Unauthorized"
+					},
+					"403" : {
+						"description" : "Forbidden"
+					},
+					"404" : {
+						"description" : "Not Found"
+					}
+				}
+			}
+		}
+	},
+	"definitions" : {
+		"DailyTaskDTO" : {
+			"type" : "object",
+			"properties" : {
+				"date" : {
+					"type" : "string"
+				},
+				"running" : {
+					"type" : "boolean"
+				},
+				"error" : {
+					"type" : "boolean"
+				}
+			}
+		}
+	}
+}
+

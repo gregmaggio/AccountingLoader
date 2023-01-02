@@ -5,9 +5,7 @@ package ca.datamagic.accounting.batch;
 
 import java.io.IOException;
 import java.text.MessageFormat;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Logger;
 
 import ca.datamagic.accounting.dao.FileDAO;
 import ca.datamagic.accounting.dao.StorageDAO;
@@ -17,15 +15,34 @@ import ca.datamagic.accounting.dao.StorageDAO;
  *
  */
 public class BatchUploader {
-	private static final Logger logger = LogManager.getLogger(BatchUploader.class);
+	private static final Logger logger = Logger.getLogger(BatchUploader.class.getName());
 	
+	public static void upload(String date) throws IOException {
+		logger.info("date: " + date);
+		FileDAO fileDAO = new FileDAO();
+		StorageDAO storageDAO = new StorageDAO();
+		try {
+			String avroDirectory = fileDAO.getAVRODirectory();
+			logger.info("avroDirectory: " + avroDirectory);
+			
+			String avroFileName = MessageFormat.format("{0}/accounting.avro.{1}", avroDirectory, date);
+			logger.info("avroFileName: " + avroFileName);
+			
+			storageDAO.upload(avroFileName);
+		} finally {
+			try {
+				fileDAO.disconnect();
+			} catch (IOException ex) {
+				logger.warning("IOException: " + ex.getMessage());
+			}
+		}
+	}
 	/**
 	 * Upload an AVRO file for a date or all AVRO files
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		FileDAO fileDAO = new FileDAO();
-		StorageDAO storageDAO = new StorageDAO();
+		int result = 0;
 		try {
 			String date = null;
 			for (int ii = 0; ii < args.length;) {
@@ -37,30 +54,12 @@ public class BatchUploader {
 					}
 				}
 			}
-			logger.debug("date: " + date);
-			
-			String avroDirectory = fileDAO.getAVRODirectory();
-			String[] avroFiles = fileDAO.getAVROFiles();
-			for (int ii = 0; ii < avroFiles.length; ii++) {
-				String avroFile = avroFiles[ii];
-				logger.debug("avroFile: " + avroFile);
-				String avroFileName = MessageFormat.format("{0}/{1}", avroDirectory, avroFile);
-				logger.debug("avroFileName: " + avroFileName);				
-				if (date != null) {
-					if (avroFile.contains(date)) {
-						storageDAO.upload(avroFileName);
-					}
-					continue;
-				}
-				storageDAO.upload(avroFileName);
-			}
+			upload(date);
 		} catch (Throwable t) {
-			logger.error("Throwable", t);
-		}
-		try {
-			fileDAO.disconnect();
-		} catch (IOException ex) {
-			logger.warn("IOException", ex);
+			logger.severe("Throwable: " + t.getMessage());
+			result = 1;
+		} finally {
+			System.exit(result);
 		}
 	}
 
