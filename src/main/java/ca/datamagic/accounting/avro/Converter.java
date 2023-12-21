@@ -42,6 +42,7 @@ public class Converter {
 	private static final Pattern timeStampPattern = Pattern.compile("(?<year>\\d+)-(?<month>\\d+)-(?<day>\\d+)\\s(?<hour>\\d+):(?<minute>\\d+):(?<second>\\d+)\\s(?<timeZone>\\w+)", Pattern.CASE_INSENSITIVE);
 	private static final TimeZone easternTimeZone = TimeZone.getTimeZone("US/Eastern");
 	private static final TimeZone centralTimeZone = TimeZone.getTimeZone("US/Central");
+	private static final TimeZone utcTimeZone = TimeZone.getTimeZone("UTC");
 	private static SimpleDateFormat utcDateFormat = null;
 	private static SimpleDateFormat utcTimeFormat = null;
 	private String csvFileName = null;
@@ -75,6 +76,8 @@ public class Converter {
 			isDST = true;
 		} else if (localTimeZone.compareToIgnoreCase("EST") == 0) {
 			timeZone = easternTimeZone;
+		} else if (localTimeZone.compareToIgnoreCase("UTC") == 0) {
+			timeZone = utcTimeZone;
 		} else {
 			throw new Exception(MessageFormat.format("Cannot handle timezone {0}.", localTimeZone));
 		}
